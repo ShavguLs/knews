@@ -45,6 +45,22 @@
                 @error('published_at')<div class="form-panel__error">{{ $message }}</div>@enderror
             </div>
 
+            <div class="form-panel__group">
+                <label class="form-panel__label" for="status">STATUS</label>
+                <select class="form-panel__input" name="status" id="status">
+                    <option value="pending" {{ old('status', 'pending') === 'pending' ? 'selected' : '' }}>PENDING</option>
+                    <option value="done" {{ old('status', 'pending') === 'done' ? 'selected' : '' }}>DONE</option>
+                </select>
+                @error('status')<div class="form-panel__error">{{ $message }}</div>@enderror
+            </div>
+
+            <div class="form-panel__group form-panel__group--checkbox">
+                <label class="form-panel__checkbox-label">
+                    <input type="checkbox" name="is_hero" value="1" {{ old('is_hero') ? 'checked' : '' }}>
+                    <span>SHOW THIS NEWS IN HERO</span>
+                </label>
+            </div>
+
             <div class="form-panel__actions">
                 <button type="submit" class="subscribe-button">SAVE NEWS</button>
                 <a href="{{ route('admin.news.index') }}" class="btn-brutal btn-brutal--stone">BACK</a>

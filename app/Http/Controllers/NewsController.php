@@ -9,13 +9,39 @@ class NewsController extends Controller
 {
     public function index()
     {
-        $newsList = News::orderBy('created_at', 'desc')->get();
-
         if (request()->routeIs('admin.*')) {
+            $newsList = News::orderBy('created_at', 'desc')->get();
             return view('admin.news.index', compact('newsList'));
         }
 
-        return view('news.index', compact('newsList'));
+        $search = request('search', '');
+
+        $hero = News::where('status', 'done')
+            ->where('is_hero', true)
+            ->first();
+
+        if (!$hero) {
+            $hero = News::where('status', 'done')
+                ->orderBy('created_at', 'desc')
+                ->first();
+        }
+
+        $dispatches = News::where('status', 'done')
+            ->when($hero, fn($q) => $q->where('id', '!=', $hero->id))
+            ->orderBy('created_at', 'desc');
+
+        if ($search) {
+            $dispatches->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('body', 'like', "%{$search}%")
+                    ->orWhere('category', 'like', "%{$search}%")
+                    ->orWhere('author', 'like', "%{$search}%");
+            });
+        }
+
+        $dispatches = $dispatches->get();
+
+        return view('news.index', compact('hero', 'dispatches', 'search'));
     }
 
     public function create()
@@ -32,7 +58,15 @@ class NewsController extends Controller
             'body' => 'required',
             'image_url' => 'nullable|url|max:255',
             'published_at' => 'nullable|date',
+            'status' => 'required|in:pending,done',
+            'is_hero' => 'nullable|boolean',
         ]);
+
+        $validated['is_hero'] = $request->boolean('is_hero');
+
+        if ($validated['is_hero']) {
+            News::where('is_hero', true)->update(['is_hero' => false]);
+        }
 
         News::create($validated);
 
@@ -41,6 +75,10 @@ class NewsController extends Controller
 
     public function show(News $news)
     {
+        if ($news->status === 'pending' && (!auth()->check() || !auth()->user()->is_admin)) {
+            abort(404);
+        }
+
         return view('news.show', compact('news'));
     }
 
@@ -58,7 +96,15 @@ class NewsController extends Controller
             'body' => 'required',
             'image_url' => 'nullable|url|max:255',
             'published_at' => 'nullable|date',
+            'status' => 'required|in:pending,done',
+            'is_hero' => 'nullable|boolean',
         ]);
+
+        $validated['is_hero'] = $request->boolean('is_hero');
+
+        if ($validated['is_hero']) {
+            News::where('is_hero', true)->where('id', '!=', $news->id)->update(['is_hero' => false]);
+        }
 
         $news->update($validated);
 

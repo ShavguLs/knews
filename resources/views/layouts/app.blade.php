@@ -13,17 +13,16 @@
         <div class="site-header__brand">
             <h1 class="site-header__title"><a href="{{ route('news.index') }}">KNEWS</a></h1>
         </div>
-        <nav class="site-header__nav">
-            <a class="nav-link @if(!request()->is('admin*')) nav-link--active @endif" href="{{ route('news.index') }}">MAIN</a>
-        </nav>
+
         <div class="site-header__actions">
             @auth
+                <a href="{{ route('admin.news.index') }}" class="subscribe-button">PANEL</a>
                 <form action="{{ route('admin.logout') }}" method="POST" style="display:inline;">
                     @csrf
                     <button type="submit" class="subscribe-button">LOGOUT</button>
                 </form>
             @else
-                <a href="{{ route('admin.login') }}" class="subscribe-button">ADMIN LOGIN</a>
+                <a href="{{ route('admin.login') }}" class="subscribe-button">LOGIN</a>
             @endauth
         </div>
     </header>

@@ -15,9 +15,12 @@ class News extends Model
         'body',
         'image_url',
         'published_at',
+        'status',
+        'is_hero',
     ];
 
     protected $casts = [
         'published_at' => 'datetime',
+        'is_hero' => 'boolean',
     ];
 }

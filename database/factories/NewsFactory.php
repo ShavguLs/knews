@@ -24,6 +24,8 @@ class NewsFactory extends Factory
             'body' => fake()->paragraphs(3, true),
             'image_url' => null,
             'published_at' => now(),
+            'status' => 'done',
+            'is_hero' => false,
         ];
     }
 }

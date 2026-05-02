@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="form-panel">
-        <h1 class="form-panel__title">ADMIN LOGIN</h1>
+        <h1 class="form-panel__title">LOGIN</h1>
 
         <form action="{{ route('admin.login.store') }}" method="POST">
             @csrf

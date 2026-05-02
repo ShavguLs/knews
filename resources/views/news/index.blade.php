@@ -14,15 +14,13 @@ $fallbackImage = 'https://lh3.googleusercontent.com/aida-public/AB6AXuB3LYG0wfKd
 @endphp
 
 @section('content')
-    @if($newsList->isEmpty())
+    @if(!$hero)
         <div class="empty-state">
             <h2 class="empty-state__title">NO DISPATCHES YET</h2>
             <p class="empty-state__text">The pressroom is quiet. Check back soon for the latest dispatches.</p>
         </div>
     @else
         @php
-            $hero = $newsList->first();
-            $rest = $newsList->skip(1);
             $heroCategory = strtolower($hero->category ?? '');
             $heroClass = $categoryClassMap[$heroCategory] ?? 'category--tech';
             $heroImage = $hero->image_url ?: $fallbackImage;
@@ -49,15 +47,25 @@ $fallbackImage = 'https://lh3.googleusercontent.com/aida-public/AB6AXuB3LYG0wfKd
             </div>
         </section>
 
-        @if($rest->count() > 0)
-            <div class="section-header">
-                <h3 class="section-title">LATEST DISPATCHES</h3>
-                <div class="section-line"></div>
-                <span class="section-issue">{{ $rest->count() }} NEWS</span>
-            </div>
+        <div class="section-header">
+            <h3 class="section-title">LATEST DISPATCHES</h3>
+            <div class="section-line"></div>
+            <form class="dispatch-search" action="{{ route('news.index') }}" method="GET">
+                <input class="dispatch-search__input" type="text" name="search" value="{{ $search }}" placeholder="SEARCH DISPATCHES">
+                <button type="submit" class="dispatch-search__btn">SEARCH</button>
+                @if($search)
+                    <a href="{{ route('news.index') }}" class="dispatch-search__clear">CLEAR</a>
+                @endif
+            </form>
+        </div>
 
+        @if($dispatches->isEmpty())
+            <div class="dispatch-search__empty">
+                <p>No dispatches found matching your search.</p>
+            </div>
+        @else
             <section class="news-grid">
-                @foreach($rest as $news)
+                @foreach($dispatches as $news)
                     @php
                         $cat = strtolower($news->category ?? '');
                         $catClass = $categoryClassMap[$cat] ?? 'category--tech';

@@ -501,7 +501,7 @@ img {
 /* Admin panel */
 
 .admin-section {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
 }
 
@@ -705,4 +705,101 @@ img {
   font-family: "Work Sans", sans-serif;
   font-size: 16px;
   color: var(--color-text);
+}
+
+/* Dispatch search */
+
+.dispatch-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dispatch-search__input {
+  border: 2px solid var(--color-ink);
+  background-color: var(--color-cream);
+  padding: 6px 10px;
+  font-family: "Work Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  width: 200px;
+  max-width: 100%;
+}
+
+.dispatch-search__input:focus {
+  outline: none;
+  border-color: var(--color-blue-600);
+  box-shadow: 0 0 0 2px var(--color-yellow-400);
+}
+
+.dispatch-search__btn {
+  border: 2px solid var(--color-ink);
+  background-color: var(--color-ink);
+  color: #ffffff;
+  padding: 6px 12px;
+  font-family: "Work Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+}
+
+.dispatch-search__btn:hover {
+  background-color: var(--color-yellow-400);
+  color: var(--color-ink);
+}
+
+.dispatch-search__clear {
+  font-family: "Work Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-red-600);
+  letter-spacing: 0.05em;
+}
+
+.dispatch-search__clear:hover {
+  text-decoration: underline;
+}
+
+.dispatch-search__empty {
+  text-align: center;
+  padding: 48px 24px;
+  border: 4px dashed var(--color-ink);
+  background-color: var(--color-stone-100);
+  font-family: "Work Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-top: 16px;
+}
+
+/* Hero checkbox */
+
+.form-panel__group--checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.form-panel__checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-family: "Work Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form-panel__checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-ink);
+  cursor: pointer;
 }
