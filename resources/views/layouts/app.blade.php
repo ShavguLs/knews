@@ -14,15 +14,24 @@
             <h1 class="site-header__title"><a href="{{ route('news.index') }}">KNEWS</a></h1>
         </div>
 
+        <nav class="site-header__nav">
+            <a href="{{ route('news.index') }}" class="nav-link {{ request()->routeIs('news.index') ? 'nav-link--active' : '' }}">HOME</a>
+            <a href="{{ route('weather.index') }}" class="nav-link {{ request()->routeIs('weather.index') ? 'nav-link--active' : '' }}">WEATHER</a>
+            <a href="{{ route('crypto.index') }}" class="nav-link {{ request()->routeIs('crypto.index') ? 'nav-link--active' : '' }}">CRYPTO</a>
+        </nav>
+
         <div class="site-header__actions">
             @auth
-                <a href="{{ route('admin.news.index') }}" class="subscribe-button">PANEL</a>
-                <form action="{{ route('admin.logout') }}" method="POST" style="display:inline;">
+                @if(auth()->user()->is_admin)
+                    <a href="{{ route('admin.news.index') }}" class="subscribe-button">PANEL</a>
+                @endif
+                <form action="{{ route('logout') }}" method="POST" style="display:inline;">
                     @csrf
                     <button type="submit" class="subscribe-button">LOGOUT</button>
                 </form>
             @else
-                <a href="{{ route('admin.login') }}" class="subscribe-button">LOGIN</a>
+                <a href="{{ route('login') }}" class="subscribe-button">LOGIN</a>
+                <a href="{{ route('register') }}" class="subscribe-button">REGISTER</a>
             @endauth
         </div>
     </header>

@@ -79,7 +79,18 @@ class NewsController extends Controller
             abort(404);
         }
 
-        return view('news.show', compact('news'));
+        $news->load(['comments' => fn($q) => $q->latest()->with('user')]);
+
+        $reactionCounts = $news->reactions()
+            ->selectRaw('type, count(*) as total')
+            ->groupBy('type')
+            ->pluck('total', 'type');
+
+        $userReaction = auth()->check()
+            ? $news->reactions()->where('user_id', auth()->id())->value('type')
+            : null;
+
+        return view('news.show', compact('news', 'reactionCounts', 'userReaction'));
     }
 
     public function edit(News $news)

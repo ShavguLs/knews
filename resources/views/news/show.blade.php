@@ -23,6 +23,72 @@
 
         <div class="article-detail__body">{{ $news->body }}</div>
 
+        <section id="reactions" class="reactions">
+            <h3 class="reactions__title">REACTIONS</h3>
+            <div class="reactions__bar">
+                @foreach(\App\Models\Reaction::TYPES as $key => $emoji)
+                    @php $count = $reactionCounts[$key] ?? 0; @endphp
+                    @auth
+                        <form action="{{ route('reactions.store', $news) }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="type" value="{{ $key }}">
+                            <button type="submit" class="reaction {{ $userReaction === $key ? 'reaction--active' : '' }}">
+                                <span class="reaction__emoji">{{ $emoji }}</span>
+                                <span class="reaction__count">{{ $count }}</span>
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="reaction">
+                            <span class="reaction__emoji">{{ $emoji }}</span>
+                            <span class="reaction__count">{{ $count }}</span>
+                        </a>
+                    @endauth
+                @endforeach
+            </div>
+        </section>
+
+        <section id="comments" class="comments">
+            <h3 class="comments__title">COMMENTS ({{ $news->comments->count() }})</h3>
+
+            @auth
+                <form action="{{ route('comments.store', $news) }}" method="POST" class="comment-form">
+                    @csrf
+                    <textarea class="form-panel__textarea" name="body" rows="4" placeholder="WRITE A COMMENT">{{ old('body') }}</textarea>
+                    @error('body')<div class="form-panel__error">{{ $message }}</div>@enderror
+                    <div class="comment-form__actions">
+                        <button type="submit" class="subscribe-button">POST COMMENT</button>
+                    </div>
+                </form>
+            @else
+                <div class="comments__prompt">
+                    <span>Join the conversation.</span>
+                    <a href="{{ route('login') }}" class="btn-brutal">LOG IN</a>
+                    <a href="{{ route('register') }}" class="btn-brutal btn-brutal--red">REGISTER</a>
+                </div>
+            @endauth
+
+            @forelse($news->comments as $comment)
+                <article class="comment">
+                    <div class="comment__head">
+                        <span class="comment__author">{{ strtoupper($comment->user->name ?? 'UNKNOWN') }}</span>
+                        <span class="comment__date">{{ $comment->created_at->format('M j, Y · H:i') }}</span>
+                    </div>
+                    <p class="comment__body">{{ $comment->body }}</p>
+                    @auth
+                        @if(auth()->id() === $comment->user_id || auth()->user()->is_admin)
+                            <form action="{{ route('comments.destroy', $comment) }}" method="POST" class="comment__delete">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="comment__delete-btn">DELETE</button>
+                            </form>
+                        @endif
+                    @endauth
+                </article>
+            @empty
+                <p class="comments__empty">No comments yet. Be the first to weigh in.</p>
+            @endforelse
+        </section>
+
         <a class="article-detail__back" href="{{ route('news.index') }}">BACK TO DISPATCHES</a>
     </div>
 @endsection
