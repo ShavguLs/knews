@@ -18,6 +18,9 @@
             <a href="{{ route('news.index') }}" class="nav-link {{ request()->routeIs('news.index') ? 'nav-link--active' : '' }}">HOME</a>
             <a href="{{ route('weather.index') }}" class="nav-link {{ request()->routeIs('weather.index') ? 'nav-link--active' : '' }}">WEATHER</a>
             <a href="{{ route('crypto.index') }}" class="nav-link {{ request()->routeIs('crypto.index') ? 'nav-link--active' : '' }}">CRYPTO</a>
+            <a href="{{ route('currency.index') }}" class="nav-link {{ request()->routeIs('currency.index') ? 'nav-link--active' : '' }}">CURRENCY</a>
+            <a href="{{ route('air.index') }}" class="nav-link {{ request()->routeIs('air.index') ? 'nav-link--active' : '' }}">AIR</a>
+            <a href="{{ route('spar.index') }}" class="nav-link {{ request()->routeIs('spar.index') ? 'nav-link--active' : '' }}">SPAR</a>
         </nav>
 
         <div class="site-header__actions">
@@ -25,6 +28,7 @@
                 @if(auth()->user()->is_admin)
                     <a href="{{ route('admin.news.index') }}" class="subscribe-button">PANEL</a>
                 @endif
+                <a href="{{ route('bookmarks.index') }}" class="subscribe-button">SAVED</a>
                 <form action="{{ route('logout') }}" method="POST" style="display:inline;">
                     @csrf
                     <button type="submit" class="subscribe-button">LOGOUT</button>

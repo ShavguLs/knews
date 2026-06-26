@@ -41,7 +41,22 @@ class NewsController extends Controller
 
         $dispatches = $dispatches->get();
 
-        return view('news.index', compact('hero', 'dispatches', 'search'));
+        $weather = app(WeatherController::class)->data();
+        $crypto = app(CryptoController::class)->data();
+        $currency = app(CurrencyController::class)->data();
+        $air = app(AirQualityController::class)->data();
+
+        $ticker = [
+            'weather' => ! $weather['error'] ? ($weather['spotlight'] ?? null) : null,
+            'air' => ! $air['error'] ? ($air['spotlight'] ?? null) : null,
+            'btc' => ! $crypto['error'] ? ($crypto['spotlight'] ?? null) : null,
+            'eth' => ! $crypto['error'] ? ($crypto['coins'][0] ?? null) : null,
+            'usd' => ! $currency['error'] ? ($currency['spotlight'] ?? null) : null,
+            'eur' => ! $currency['error'] ? ($currency['currencies'][0] ?? null) : null,
+            'headline' => $hero,
+        ];
+
+        return view('news.index', compact('hero', 'dispatches', 'search', 'ticker'));
     }
 
     public function create()
@@ -90,7 +105,10 @@ class NewsController extends Controller
             ? $news->reactions()->where('user_id', auth()->id())->value('type')
             : null;
 
-        return view('news.show', compact('news', 'reactionCounts', 'userReaction'));
+        $isBookmarked = auth()->check()
+            && $news->bookmarks()->where('user_id', auth()->id())->exists();
+
+        return view('news.show', compact('news', 'reactionCounts', 'userReaction', 'isBookmarked'));
     }
 
     public function edit(News $news)

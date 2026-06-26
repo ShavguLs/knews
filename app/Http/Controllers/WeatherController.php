@@ -21,10 +21,15 @@ class WeatherController extends Controller
 
     public function index()
     {
+        return view('weather.index', $this->data());
+    }
+
+    public function data(): array
+    {
         $cached = Cache::get('weather.georgia');
 
         if ($cached) {
-            return view('weather.index', $cached);
+            return $cached;
         }
 
         $data = $this->fetch();
@@ -33,7 +38,7 @@ class WeatherController extends Controller
             Cache::put('weather.georgia', $data, now()->addMinutes(20));
         }
 
-        return view('weather.index', $data);
+        return $data;
     }
 
     private function fetch(): array

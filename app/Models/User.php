@@ -58,4 +58,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Reaction::class);
     }
+
+    public function bookmarks()
+    {
+        return $this->hasMany(Bookmark::class);
+    }
+
+    public function bookmarkedNews()
+    {
+        return $this->belongsToMany(News::class, 'bookmarks')->withTimestamps();
+    }
 }

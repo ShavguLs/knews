@@ -14,6 +14,51 @@ $fallbackImage = 'https://lh3.googleusercontent.com/aida-public/AB6AXuB3LYG0wfKd
 @endphp
 
 @section('content')
+    @if($ticker['weather'] || $ticker['air'] || $ticker['btc'] || $ticker['eth'] || $ticker['usd'] || $ticker['eur'] || $ticker['headline'])
+        <div class="ticker">
+            @if($ticker['weather'])
+                <a href="{{ route('weather.index') }}" class="ticker__item">
+                    <span class="ticker__label">KUTAISI</span>
+                    <span class="material-symbols-outlined ticker__icon">{{ $ticker['weather']['icon'] }}</span>
+                    <span class="ticker__value">{{ $ticker['weather']['temp'] !== null ? $ticker['weather']['temp'] . '°' : '—' }}</span>
+                </a>
+            @endif
+            @if($ticker['air'])
+                <a href="{{ route('air.index') }}" class="ticker__item">
+                    <span class="ticker__label">AIR</span>
+                    <span class="ticker__value">{{ $ticker['air']['aqi'] !== null ? $ticker['air']['aqi'] : '—' }}</span>
+                    <span class="aqi-badge {{ $ticker['air']['class'] }}">{{ $ticker['air']['label'] }}</span>
+                </a>
+            @endif
+            @foreach(['btc', 'eth'] as $coin)
+                @if($ticker[$coin])
+                    @php $up = ($ticker[$coin]['change'] ?? 0) >= 0; @endphp
+                    <a href="{{ route('crypto.index') }}" class="ticker__item">
+                        <span class="ticker__label">{{ $ticker[$coin]['symbol'] }}</span>
+                        <span class="ticker__value">${{ number_format($ticker[$coin]['price'] ?? 0, 0) }}</span>
+                        <span class="ticker__change {{ $up ? 'crypto-change--up' : 'crypto-change--down' }}">{{ $up ? '▲' : '▼' }} {{ number_format(abs($ticker[$coin]['change'] ?? 0), 2) }}%</span>
+                    </a>
+                @endif
+            @endforeach
+            @foreach(['usd', 'eur'] as $cur)
+                @if($ticker[$cur])
+                    @php $cup = ($ticker[$cur]['change'] ?? 0) >= 0; @endphp
+                    <a href="{{ route('currency.index') }}" class="ticker__item">
+                        <span class="ticker__label">{{ $ticker[$cur]['code'] }}</span>
+                        <span class="ticker__value">₾{{ number_format($ticker[$cur]['per_unit'] ?? 0, 2) }}</span>
+                        <span class="ticker__change {{ $cup ? 'crypto-change--up' : 'crypto-change--down' }}">{{ $cup ? '▲' : '▼' }} {{ number_format(abs($ticker[$cur]['change'] ?? 0), 2) }}%</span>
+                    </a>
+                @endif
+            @endforeach
+            @if($ticker['headline'])
+                <a href="{{ route('news.show', $ticker['headline']) }}" class="ticker__item ticker__item--headline">
+                    <span class="ticker__label">LATEST</span>
+                    <span class="ticker__headline">{{ strtoupper(\Illuminate\Support\Str::limit($ticker['headline']->title, 70)) }}</span>
+                </a>
+            @endif
+        </div>
+    @endif
+
     @if(!$hero)
         <div class="empty-state">
             <h2 class="empty-state__title">NO DISPATCHES YET</h2>

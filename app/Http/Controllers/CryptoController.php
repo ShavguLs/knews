@@ -25,10 +25,15 @@ class CryptoController extends Controller
 
     public function index()
     {
+        return view('crypto.index', $this->data());
+    }
+
+    public function data(): array
+    {
         $cached = Cache::get('crypto.markets');
 
         if ($cached) {
-            return view('crypto.index', $cached);
+            return $cached;
         }
 
         $data = $this->fetch();
@@ -37,7 +42,7 @@ class CryptoController extends Controller
             Cache::put('crypto.markets', $data, now()->addMinutes(5));
         }
 
-        return view('crypto.index', $data);
+        return $data;
     }
 
     private function fetch(): array

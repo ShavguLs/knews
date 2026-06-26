@@ -23,6 +23,18 @@
 
         <div class="article-detail__body">{{ $news->body }}</div>
 
+        @auth
+            <div class="article-actions">
+                <form action="{{ route('bookmarks.toggle', $news) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="bookmark-btn {{ $isBookmarked ? 'bookmark-btn--active' : '' }}">
+                        <span class="material-symbols-outlined">{{ $isBookmarked ? 'bookmark' : 'bookmark_add' }}</span>
+                        {{ $isBookmarked ? 'SAVED' : 'SAVE' }}
+                    </button>
+                </form>
+            </div>
+        @endauth
+
         <section id="reactions" class="reactions">
             <h3 class="reactions__title">REACTIONS</h3>
             <div class="reactions__bar">
@@ -70,7 +82,7 @@
             @forelse($news->comments as $comment)
                 <article class="comment">
                     <div class="comment__head">
-                        <span class="comment__author">{{ strtoupper($comment->user->name ?? 'UNKNOWN') }}</span>
+                        <a class="comment__author" href="{{ route('profile.show', $comment->user) }}">{{ strtoupper($comment->user->name ?? 'UNKNOWN') }}</a>
                         <span class="comment__date">{{ $comment->created_at->format('M j, Y · H:i') }}</span>
                     </div>
                     <p class="comment__body">{{ $comment->body }}</p>
