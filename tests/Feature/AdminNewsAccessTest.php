@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Models\News;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class AdminNewsAccessTest extends TestCase
@@ -80,6 +82,29 @@ class AdminNewsAccessTest extends TestCase
         $this->assertDatabaseHas('news', ['title' => 'Test News']);
     }
 
+    public function test_admin_user_can_create_news_with_uploaded_image(): void
+    {
+        Storage::fake('public');
+
+        $admin = User::factory()->create(['is_admin' => true]);
+        $image = $this->fakePngUpload('dispatch.png');
+
+        $response = $this->actingAs($admin)->post('/admin/news', [
+            'title' => 'Image News',
+            'category' => 'Test Category',
+            'author' => 'Test Author',
+            'body' => 'Test body content',
+            'status' => 'done',
+            'image_file' => $image,
+        ]);
+
+        $response->assertRedirect(route('admin.news.index'));
+
+        $news = News::where('title', 'Image News')->firstOrFail();
+        $this->assertNotNull($news->image_path);
+        Storage::disk('public')->assertExists($news->image_path);
+    }
+
     public function test_admin_user_can_update_news(): void
     {
         $admin = User::factory()->create(['is_admin' => true]);
@@ -97,15 +122,44 @@ class AdminNewsAccessTest extends TestCase
         $this->assertDatabaseHas('news', ['id' => $news->id, 'title' => 'Updated Title']);
     }
 
+    public function test_admin_user_can_replace_uploaded_news_image(): void
+    {
+        Storage::fake('public');
+
+        $admin = User::factory()->create(['is_admin' => true]);
+        $oldPath = $this->fakePngUpload('old.png')->store('news-images', 'public');
+        $news = News::factory()->create(['image_path' => $oldPath]);
+
+        $response = $this->actingAs($admin)->put("/admin/news/{$news->id}", [
+            'title' => $news->title,
+            'category' => $news->category,
+            'author' => $news->author,
+            'body' => $news->body,
+            'status' => 'done',
+            'image_file' => $this->fakePngUpload('new.png'),
+        ]);
+
+        $response->assertRedirect(route('admin.news.index'));
+
+        $news->refresh();
+        $this->assertNotEquals($oldPath, $news->image_path);
+        Storage::disk('public')->assertMissing($oldPath);
+        Storage::disk('public')->assertExists($news->image_path);
+    }
+
     public function test_admin_user_can_delete_news(): void
     {
+        Storage::fake('public');
+
         $admin = User::factory()->create(['is_admin' => true]);
-        $news = News::factory()->create();
+        $imagePath = $this->fakePngUpload('delete.png')->store('news-images', 'public');
+        $news = News::factory()->create(['image_path' => $imagePath]);
 
         $response = $this->actingAs($admin)->delete("/admin/news/{$news->id}");
 
         $response->assertRedirect(route('admin.news.index'));
         $this->assertDatabaseMissing('news', ['id' => $news->id]);
+        Storage::disk('public')->assertMissing($imagePath);
     }
 
     public function test_public_news_index_shows_done_articles(): void
@@ -297,5 +351,27 @@ class AdminNewsAccessTest extends TestCase
 
         $response = $this->get('/?search=Unique');
         $response->assertDontSee('Pending Article');
+    }
+
+    public function test_api_news_returns_published_articles_only(): void
+    {
+        $published = News::factory()->create(['status' => 'done', 'title' => 'Published API Article']);
+        News::factory()->create(['status' => 'pending', 'title' => 'Pending API Article']);
+
+        $response = $this->getJson('/api/news');
+
+        $response->assertOk()
+            ->assertJsonPath('data.0.id', $published->id)
+            ->assertJsonPath('data.0.title', 'Published API Article')
+            ->assertJsonMissing(['title' => 'Pending API Article']);
+    }
+
+    private function fakePngUpload(string $name): UploadedFile
+    {
+        $png = base64_decode(
+            'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAFgwJ/lZY2ZQAAAABJRU5ErkJggg=='
+        );
+
+        return UploadedFile::fake()->createWithContent($name, $png);
     }
 }

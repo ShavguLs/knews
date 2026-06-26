@@ -4,7 +4,7 @@
 
 @php
     $fallbackImage = 'https://lh3.googleusercontent.com/aida-public/AB6AXuB3LYG0wfKd8oj34vEa4xqPV_t8xl4TRrCzrRBCSLqvxPjeUto3ow0QU_JgcgsCh0VEcD9F-_v0jUwKkBgfXfgGibrQueI3wVUIgsKImEfIEll_ME2GrjDmzGBdgAAxIZkQzamnvlhuU3HOd1AI166mKRxsccaepolfA1jhU_MWubjFkuklFl8NEewOr2gicOyHkB4RN6ztOO5ITdFNLOOXH0a3yNmyVBRUX7kf2RDzm3mb9V__Yo7niRL_p1SA_8_2qUlFCHEw-zR';
-    $articleImage = $news->image_url ?: $fallbackImage;
+    $articleImage = $news->imageSource() ?: $fallbackImage;
     $articleDate = $news->published_at ? $news->published_at->format('F j, Y') : 'UNPUBLISHED';
 @endphp
 

@@ -67,6 +67,8 @@ The admin news resource uses `NewsController` methods:
 
 When an article is saved as the hero, the controller clears `is_hero` from other articles so only one article is marked as hero.
 
+Admin create and edit forms accept an optional uploaded image through `image_file`. Uploaded images are stored on the public disk under `news-images`. The older `image_url` field still exists as a fallback for external images.
+
 ## Comments Flow
 
 Comment routes are inside the `auth` middleware group.
@@ -149,3 +151,12 @@ These routes render server-side pages backed by external HTTP requests and Larav
 
 See [External Services](external-services.md) for details.
 
+## JSON API Flow
+
+Published news is also available as JSON:
+
+```text
+GET /api/news
+```
+
+`NewsApiController@index` returns only articles with `status = done`. Each item includes the article id, title, category, author, body, resolved image URL, publication timestamp, and public article URL.

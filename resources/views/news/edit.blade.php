@@ -6,7 +6,7 @@
     <div class="form-panel">
         <h1 class="form-panel__title">EDIT DISPATCH</h1>
 
-        <form action="{{ route('admin.news.update', $news) }}" method="POST">
+        <form action="{{ route('admin.news.update', $news) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -35,7 +35,16 @@
             </div>
 
             <div class="form-panel__group">
-                <label class="form-panel__label" for="image_url">IMAGE URL</label>
+                <label class="form-panel__label" for="image_file">REPLACE IMAGE UPLOAD</label>
+                <input class="form-panel__input" type="file" name="image_file" id="image_file" accept="image/*">
+                @if($news->image_path)
+                    <div class="form-panel__hint">Current uploaded image: {{ $news->image_path }}</div>
+                @endif
+                @error('image_file')<div class="form-panel__error">{{ $message }}</div>@enderror
+            </div>
+
+            <div class="form-panel__group">
+                <label class="form-panel__label" for="image_url">IMAGE URL FALLBACK</label>
                 <input class="form-panel__input" type="url" name="image_url" id="image_url" value="{{ old('image_url', $news->image_url) }}">
                 @error('image_url')<div class="form-panel__error">{{ $message }}</div>@enderror
             </div>

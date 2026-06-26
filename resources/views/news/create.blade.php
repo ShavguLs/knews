@@ -6,7 +6,7 @@
     <div class="form-panel">
         <h1 class="form-panel__title">CREATE DISPATCH</h1>
 
-        <form action="{{ route('admin.news.store') }}" method="POST">
+        <form action="{{ route('admin.news.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="form-panel__group">
@@ -34,7 +34,13 @@
             </div>
 
             <div class="form-panel__group">
-                <label class="form-panel__label" for="image_url">IMAGE URL</label>
+                <label class="form-panel__label" for="image_file">IMAGE UPLOAD</label>
+                <input class="form-panel__input" type="file" name="image_file" id="image_file" accept="image/*">
+                @error('image_file')<div class="form-panel__error">{{ $message }}</div>@enderror
+            </div>
+
+            <div class="form-panel__group">
+                <label class="form-panel__label" for="image_url">IMAGE URL FALLBACK</label>
                 <input class="form-panel__input" type="url" name="image_url" id="image_url" value="{{ old('image_url') }}">
                 @error('image_url')<div class="form-panel__error">{{ $message }}</div>@enderror
             </div>

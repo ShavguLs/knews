@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class News extends Model
 {
@@ -14,6 +15,7 @@ class News extends Model
         'author',
         'body',
         'image_url',
+        'image_path',
         'published_at',
         'status',
         'is_hero',
@@ -37,5 +39,14 @@ class News extends Model
     public function bookmarks()
     {
         return $this->hasMany(Bookmark::class);
+    }
+
+    public function imageSource(): ?string
+    {
+        if ($this->image_path) {
+            return Storage::disk('public')->url($this->image_path);
+        }
+
+        return $this->image_url;
     }
 }

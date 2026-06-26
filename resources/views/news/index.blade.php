@@ -68,7 +68,7 @@ $fallbackImage = 'https://lh3.googleusercontent.com/aida-public/AB6AXuB3LYG0wfKd
         @php
             $heroCategory = strtolower($hero->category ?? '');
             $heroClass = $categoryClassMap[$heroCategory] ?? 'category--tech';
-            $heroImage = $hero->image_url ?: $fallbackImage;
+            $heroImage = $hero->imageSource() ?: $fallbackImage;
             $heroDate = $hero->published_at ? $hero->published_at->format('F j, Y') : 'UNPUBLISHED';
         @endphp
 

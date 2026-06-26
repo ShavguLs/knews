@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\News;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class NewsController extends Controller
 {
@@ -66,18 +67,14 @@ class NewsController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'category' => 'required|max:100',
-            'author' => 'required|max:100',
-            'body' => 'required',
-            'image_url' => 'nullable|url|max:255',
-            'published_at' => 'nullable|date',
-            'status' => 'required|in:pending,done',
-            'is_hero' => 'nullable|boolean',
-        ]);
+        $validated = $this->validateNews($request);
 
         $validated['is_hero'] = $request->boolean('is_hero');
+        unset($validated['image_file']);
+
+        if ($request->hasFile('image_file')) {
+            $validated['image_path'] = $request->file('image_file')->store('news-images', 'public');
+        }
 
         if ($validated['is_hero']) {
             News::where('is_hero', true)->update(['is_hero' => false]);
@@ -118,18 +115,18 @@ class NewsController extends Controller
 
     public function update(Request $request, News $news)
     {
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'category' => 'required|max:100',
-            'author' => 'required|max:100',
-            'body' => 'required',
-            'image_url' => 'nullable|url|max:255',
-            'published_at' => 'nullable|date',
-            'status' => 'required|in:pending,done',
-            'is_hero' => 'nullable|boolean',
-        ]);
+        $validated = $this->validateNews($request);
 
         $validated['is_hero'] = $request->boolean('is_hero');
+        unset($validated['image_file']);
+
+        if ($request->hasFile('image_file')) {
+            if ($news->image_path) {
+                Storage::disk('public')->delete($news->image_path);
+            }
+
+            $validated['image_path'] = $request->file('image_file')->store('news-images', 'public');
+        }
 
         if ($validated['is_hero']) {
             News::where('is_hero', true)->where('id', '!=', $news->id)->update(['is_hero' => false]);
@@ -142,8 +139,27 @@ class NewsController extends Controller
 
     public function destroy(News $news)
     {
+        if ($news->image_path) {
+            Storage::disk('public')->delete($news->image_path);
+        }
+
         $news->delete();
 
         return redirect()->route('admin.news.index')->with('success', 'News deleted successfully.');
+    }
+
+    private function validateNews(Request $request): array
+    {
+        return $request->validate([
+            'title' => 'required|max:255',
+            'category' => 'required|max:100',
+            'author' => 'required|max:100',
+            'body' => 'required',
+            'image_url' => 'nullable|url|max:255',
+            'image_file' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
+            'published_at' => 'nullable|date',
+            'status' => 'required|in:pending,done',
+            'is_hero' => 'nullable|boolean',
+        ]);
     }
 }

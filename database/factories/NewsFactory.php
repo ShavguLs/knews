@@ -23,6 +23,7 @@ class NewsFactory extends Factory
             'author' => fake()->name(),
             'body' => fake()->paragraphs(3, true),
             'image_url' => null,
+            'image_path' => null,
             'published_at' => now(),
             'status' => 'done',
             'is_hero' => false,

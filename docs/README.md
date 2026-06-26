@@ -27,8 +27,10 @@ Most features are server-rendered. There are no JSON API routes in the current p
 - Public news homepage and article pages.
 - Search across published article dispatches.
 - Admin-only news CRUD panel.
+- News image uploads with external image URLs as a fallback.
 - User registration, login, logout, and profile pages.
 - Authenticated comments, reactions, and bookmarks.
+- JSON endpoint for published news at `/api/news`.
 - Live data pages backed by external APIs and Laravel cache.
 
 ## Important Access Rules
@@ -38,4 +40,3 @@ Most features are server-rendered. There are no JSON API routes in the current p
 - Admin users can preview pending articles.
 - The admin news panel requires an authenticated user with `is_admin = true`.
 - Comments, reactions, and bookmarks require authentication.
-

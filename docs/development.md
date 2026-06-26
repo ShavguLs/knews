@@ -32,6 +32,12 @@ Run migrations:
 php artisan migrate
 ```
 
+Create the public storage symlink so uploaded news images can be served by the browser:
+
+```bash
+php artisan storage:link
+```
+
 Build frontend assets for production:
 
 ```bash
@@ -92,6 +98,8 @@ The custom feature coverage in `tests/Feature/AdminNewsAccessTest.php` verifies:
 | Add a public page | `routes/web.php`, new controller method, new Blade view. |
 | Add a new admin feature | `routes/web.php` admin group, controller, middleware rules if needed, Blade views. |
 | Change article fields | `database/migrations`, `app/Models/News.php`, `NewsController` validation, create/edit/show/index views. |
+| Change news image uploads | `NewsController`, `app/Models/News.php`, `resources/views/news/create.blade.php`, `resources/views/news/edit.blade.php`, filesystem config. |
+| Change JSON news API | `routes/api.php`, `app/Http/Controllers/Api/NewsApiController.php`. |
 | Change comments | `CommentController`, `app/Models/Comment.php`, article show view, comments migration. |
 | Change reactions | `ReactionController`, `app/Models/Reaction.php`, article show view, reactions migration. |
 | Change bookmarks | `BookmarkController`, `app/Models/Bookmark.php`, article show view, bookmarks page. |
@@ -117,4 +125,3 @@ This can be done through a database client, a seeder, Tinker, or a one-off migra
 - Admin-only news management lives inside the `admin` middleware group.
 - External data providers are isolated in their own controllers and exposed through `data()` methods for reuse.
 - Successful external responses are cached to reduce latency and provider load.
-

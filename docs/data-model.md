@@ -30,12 +30,15 @@ Created by `2026_05_01_164537_create_news_table.php` and extended by later migra
 | `author` | Author display name. |
 | `body` | Full article body. |
 | `image_url` | Optional external image URL. |
+| `image_path` | Optional uploaded image path on the public filesystem disk. |
 | `published_at` | Optional publication timestamp. |
 | `status` | Publication state. Valid controller values are `pending` and `done`. |
 | `is_hero` | Marks the article as the homepage hero. |
 | `created_at`, `updated_at` | Laravel timestamps. |
 
 `NewsController` keeps hero selection unique at the application level by clearing existing heroes when a new hero is saved.
+
+Uploaded article images are stored in `storage/app/public/news-images`. Laravel serves them through the public storage symlink created by `php artisan storage:link`.
 
 ### `comments`
 
@@ -137,4 +140,3 @@ Deleting a news article cascades to its:
 - Bookmarks.
 
 This keeps interaction tables from retaining orphaned records.
-

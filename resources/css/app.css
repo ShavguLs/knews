@@ -633,6 +633,14 @@ img {
   margin-top: 4px;
 }
 
+.form-panel__hint {
+  color: #57534e;
+  font-family: "Work Sans", sans-serif;
+  font-size: 12px;
+  margin-top: 6px;
+  word-break: break-word;
+}
+
 .form-panel__actions {
   display: flex;
   gap: 12px;
