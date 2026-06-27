@@ -43,8 +43,8 @@ class News extends Model
 
     public function imageSource(): ?string
     {
-        if ($this->image_path) {
-            return Storage::disk('public')->url($this->image_path);
+        if ($this->image_path && Storage::disk('public')->exists($this->image_path)) {
+            return '/storage/' . ltrim($this->image_path, '/');
         }
 
         return $this->image_url;

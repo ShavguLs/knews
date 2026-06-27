@@ -103,6 +103,19 @@ class AdminNewsAccessTest extends TestCase
         $news = News::where('title', 'Image News')->firstOrFail();
         $this->assertNotNull($news->image_path);
         Storage::disk('public')->assertExists($news->image_path);
+        $this->assertSame('/storage/' . $news->image_path, $news->imageSource());
+    }
+
+    public function test_uploaded_image_source_falls_back_when_file_is_missing(): void
+    {
+        Storage::fake('public');
+
+        $news = News::factory()->create([
+            'image_path' => 'news-images/missing.png',
+            'image_url' => 'https://example.com/fallback.png',
+        ]);
+
+        $this->assertSame('https://example.com/fallback.png', $news->imageSource());
     }
 
     public function test_admin_user_can_update_news(): void
