@@ -26,6 +26,29 @@ class News extends Model
         'is_hero' => 'boolean',
     ];
 
+    public static function rules(): array
+    {
+        return [
+            'title' => 'required|max:255',
+            'category' => 'required|max:100',
+            'author' => 'required|max:100',
+            'body' => 'required',
+            'image_url' => 'nullable|url|max:255',
+            'published_at' => 'nullable|date',
+            'status' => 'required|in:pending,done',
+            'is_hero' => 'nullable|boolean',
+        ];
+    }
+
+    public function setAsHero(): void
+    {
+        static::where('is_hero', true)
+            ->where('id', '!=', $this->id)
+            ->update(['is_hero' => false]);
+
+        $this->update(['is_hero' => true]);
+    }
+
     public function comments()
     {
         return $this->hasMany(Comment::class);

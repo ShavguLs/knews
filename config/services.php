@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'telegram' => [
+        'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+        'admin_chat_ids' => array_filter(array_map('trim', explode(',', (string) env('TELEGRAM_ADMIN_CHAT_IDS', '')))),
+        'default_category' => env('TELEGRAM_DEFAULT_CATEGORY', 'Dispatch'),
+        'default_author' => env('TELEGRAM_DEFAULT_AUTHOR', 'Desk'),
+    ],
+
 ];

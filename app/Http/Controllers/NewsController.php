@@ -76,11 +76,11 @@ class NewsController extends Controller
             $validated['image_path'] = $request->file('image_file')->store('news-images', 'public');
         }
 
-        if ($validated['is_hero']) {
-            News::where('is_hero', true)->update(['is_hero' => false]);
-        }
+        $news = News::create($validated);
 
-        News::create($validated);
+        if ($news->is_hero) {
+            $news->setAsHero();
+        }
 
         return redirect()->route('admin.news.index')->with('success', 'News created successfully.');
     }
@@ -128,11 +128,11 @@ class NewsController extends Controller
             $validated['image_path'] = $request->file('image_file')->store('news-images', 'public');
         }
 
-        if ($validated['is_hero']) {
-            News::where('is_hero', true)->where('id', '!=', $news->id)->update(['is_hero' => false]);
-        }
-
         $news->update($validated);
+
+        if ($news->is_hero) {
+            $news->setAsHero();
+        }
 
         return redirect()->route('admin.news.index')->with('success', 'News updated successfully.');
     }
@@ -150,16 +150,8 @@ class NewsController extends Controller
 
     private function validateNews(Request $request): array
     {
-        return $request->validate([
-            'title' => 'required|max:255',
-            'category' => 'required|max:100',
-            'author' => 'required|max:100',
-            'body' => 'required',
-            'image_url' => 'nullable|url|max:255',
-            'image_file' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
-            'published_at' => 'nullable|date',
-            'status' => 'required|in:pending,done',
-            'is_hero' => 'nullable|boolean',
-        ]);
+        return $request->validate(
+            News::rules() + ['image_file' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048']
+        );
     }
 }

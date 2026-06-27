@@ -8,6 +8,7 @@ Use these docs as the starting point for understanding the project:
 - [Application Flow](application-flow.md) explains the user-facing and admin request flows.
 - [Data Model](data-model.md) describes the database tables, Eloquent models, relationships, and important constraints.
 - [External Services](external-services.md) explains the live-data integrations and caching behavior.
+- [Telegram Admin Bot](telegram-bot.md) explains managing news from Telegram and how authorization works.
 - [Development Guide](development.md) covers setup, common commands, tests, and typical change locations.
 
 ## High-Level Architecture
@@ -27,6 +28,7 @@ Most features are server-rendered. There are no JSON API routes in the current p
 - Public news homepage and article pages.
 - Search across published article dispatches.
 - Admin-only news CRUD panel.
+- Telegram admin bot for managing news from a chat.
 - News image uploads with external image URLs as a fallback.
 - User registration, login, logout, and profile pages.
 - Authenticated comments, reactions, and bookmarks.
