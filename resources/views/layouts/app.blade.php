@@ -14,29 +14,35 @@
             <h1 class="site-header__title"><a href="{{ route('news.index') }}">KNEWS</a></h1>
         </div>
 
-        <nav class="site-header__nav">
-            <a href="{{ route('news.index') }}" class="nav-link {{ request()->routeIs('news.index') ? 'nav-link--active' : '' }}">HOME</a>
-            <a href="{{ route('weather.index') }}" class="nav-link {{ request()->routeIs('weather.index') ? 'nav-link--active' : '' }}">WEATHER</a>
-            <a href="{{ route('crypto.index') }}" class="nav-link {{ request()->routeIs('crypto.index') ? 'nav-link--active' : '' }}">CRYPTO</a>
-            <a href="{{ route('currency.index') }}" class="nav-link {{ request()->routeIs('currency.index') ? 'nav-link--active' : '' }}">CURRENCY</a>
-            <a href="{{ route('air.index') }}" class="nav-link {{ request()->routeIs('air.index') ? 'nav-link--active' : '' }}">AIR</a>
-            <a href="{{ route('spar.index') }}" class="nav-link {{ request()->routeIs('spar.index') ? 'nav-link--active' : '' }}">SPAR</a>
-        </nav>
+        <button class="site-header__toggle" type="button" aria-controls="site-menu" aria-expanded="false" aria-label="Open navigation" data-site-menu-toggle>
+            <span class="material-symbols-outlined site-header__toggle-icon" aria-hidden="true">menu</span>
+        </button>
 
-        <div class="site-header__actions">
-            @auth
-                @if(auth()->user()->is_admin)
-                    <a href="{{ route('admin.news.index') }}" class="subscribe-button">PANEL</a>
-                @endif
-                <a href="{{ route('bookmarks.index') }}" class="subscribe-button">SAVED</a>
-                <form action="{{ route('logout') }}" method="POST" style="display:inline;">
-                    @csrf
-                    <button type="submit" class="subscribe-button">LOGOUT</button>
-                </form>
-            @else
-                <a href="{{ route('login') }}" class="subscribe-button">LOGIN</a>
-                <a href="{{ route('register') }}" class="subscribe-button">REGISTER</a>
-            @endauth
+        <div class="site-header__menu" id="site-menu" data-site-menu>
+            <nav class="site-header__nav" aria-label="Primary navigation">
+                <a href="{{ route('news.index') }}" class="nav-link {{ request()->routeIs('news.index') ? 'nav-link--active' : '' }}">HOME</a>
+                <a href="{{ route('weather.index') }}" class="nav-link {{ request()->routeIs('weather.index') ? 'nav-link--active' : '' }}">WEATHER</a>
+                <a href="{{ route('crypto.index') }}" class="nav-link {{ request()->routeIs('crypto.index') ? 'nav-link--active' : '' }}">CRYPTO</a>
+                <a href="{{ route('currency.index') }}" class="nav-link {{ request()->routeIs('currency.index') ? 'nav-link--active' : '' }}">CURRENCY</a>
+                <a href="{{ route('air.index') }}" class="nav-link {{ request()->routeIs('air.index') ? 'nav-link--active' : '' }}">AIR</a>
+                <a href="{{ route('spar.index') }}" class="nav-link {{ request()->routeIs('spar.index') ? 'nav-link--active' : '' }}">SPAR</a>
+            </nav>
+
+            <div class="site-header__actions">
+                @auth
+                    @if(auth()->user()->is_admin)
+                        <a href="{{ route('admin.news.index') }}" class="subscribe-button">PANEL</a>
+                    @endif
+                    <a href="{{ route('bookmarks.index') }}" class="subscribe-button">SAVED</a>
+                    <form action="{{ route('logout') }}" method="POST" class="site-header__logout-form">
+                        @csrf
+                        <button type="submit" class="subscribe-button">LOGOUT</button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="subscribe-button">LOGIN</a>
+                    <a href="{{ route('register') }}" class="subscribe-button">REGISTER</a>
+                @endauth
+            </div>
         </div>
     </header>
 
